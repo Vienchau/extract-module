@@ -39,7 +39,9 @@ char* ConvertIDTopic(int topic);
 
 /* Function call define */
 char* FindByTopics(int TopicId, char* log);
-char* FindByTimestamp(char* Timestamp, char* log);
-char* FindByTopicsAndTimestamp(char* Topic, char* Timestamp, char* log);
+char* FindByTimestamp(long long Timestamp, int range, char* log,
+                      int keepTempFileFlag);
+char* FindByTopicsAndTimestamp(int Topic, long long Timestamp, int range,
+                               char* log);
 
 #endif
