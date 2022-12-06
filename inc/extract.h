@@ -28,6 +28,7 @@ enum {
    GET_MEM,
    GET_CPU,
    GET_CHANNEL_USAGE,
+   // DEFAULT,
 };
 
 #define LINE 1024
