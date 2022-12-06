@@ -1,0 +1,9 @@
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+*.sh
+obj/
+bin/
+
