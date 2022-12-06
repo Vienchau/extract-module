@@ -79,13 +79,10 @@ char* FindByTimestamp(long long Timestamp, int range, char* log,
          struct tm tm_date;
          if (strptime(temp_token, "%Y-%m-%d %H:%M:%S", &tm_date)) {
             epoch = mktime(&tm_date);
-            printf("ok ngon 1: %d\n", epoch);
             if (epoch >= minRange && epoch <= maxRange) {
                char* linePointer = (char*)malloc(strlen(line) + 1);
                strcpy(linePointer, line);
                fputs(linePointer, file_temp);
-               printf("ok ngon 2");
-               printf("content of line: %s\n", line);
                free(linePointer);
             }
             free(temp_token);
