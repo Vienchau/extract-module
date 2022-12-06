@@ -3,9 +3,8 @@
 #include "extract.h"
 
 int main() {
-   char* resultString = FindByTopics(
-       GET_WLAN, "/home/vienchau/Desktop/ws/extract-module/mqtt_log");
-   printf("%s\n", resultString);
-   free(resultString);
+   FindByTimestamp("GET_WLAN",
+                   "/home/vienchau/Desktop/ws/extract-module/mqtt_log");
+
    return 0;
 }

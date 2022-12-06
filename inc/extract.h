@@ -38,7 +38,7 @@ void RemoveChar(char* des, char remove);
 char* ConvertIDTopic(int topic);
 
 /* Function call define */
-char* FindByTopics(int Topic, char* log);
+char* FindByTopics(int TopicId, char* log);
 char* FindByTimestamp(char* Timestamp, char* log);
 char* FindByTopicsAndTimestamp(char* Topic, char* Timestamp, char* log);
 
