@@ -36,6 +36,7 @@ enum {
 /* Utils define */
 void RemoveChar(char* des, char remove);
 char* ConvertIDTopic(int topic);
+
 /* Function call define */
 char* FindByTopics(int Topic, char* log);
 char* FindByTimestamp(char* Timestamp, char* log);

@@ -1,6 +1,11 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "extract.h"
 
 int main() {
-   FindByTopics(GET_NAP_0, "/home/vienchau/Desktop/ws/extract-module/mqtt_log");
+   char* resultString = FindByTopics(
+       GET_WLAN, "/home/vienchau/Desktop/ws/extract-module/mqtt_log");
+   printf("%s\n", resultString);
+   free(resultString);
    return 0;
 }
