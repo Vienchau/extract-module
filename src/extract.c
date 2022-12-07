@@ -1,8 +1,12 @@
+#define __USE_XOPEN
+#define _GNU_SOURCE
+
 #include "extract.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
 /* ERRORR: RETURN -1 IN LINE 79 */
 char* FindByTopics(int TopicId, char* log) {
    /* Variable  Declaration */
@@ -95,7 +99,7 @@ char* FindByTimestamp(long long Timestamp, int range, char* log,
    fclose(file_ptr);
 
    /* Remove temp file */
-   if (keepTempFileFlag == 1) {
+   if (keepTempFileFlag == RETURN_STRING) {
       char* returnLines;
       file_temp = fopen("temp", "r");
       fseek(file_temp, 0L, SEEK_END);
@@ -125,7 +129,7 @@ char* FindByTimestamp(long long Timestamp, int range, char* log,
 
 char* FindByTopicsAndTimestamp(int Topic, long long Timestamp, int range,
                                char* log) {
-   FindByTimestamp(Timestamp, range, log, 0);
+   FindByTimestamp(Timestamp, range, log, RETURN_TEMP_FILE);
    char* finalFilter = FindByTopics(Topic, "temp");
    return finalFilter;
 }

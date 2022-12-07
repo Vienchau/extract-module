@@ -54,3 +54,5 @@ char* ConvertIDTopic(int topic) {
       }
    }
 }
+
+long long ConvertTimeToEpoch() {}

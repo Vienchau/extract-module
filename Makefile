@@ -6,7 +6,8 @@ AR = $(CROSS_COMPILE)ar
 AS = $(CROSS_COMPILE)as
 
 # LIBRARY_PATH =/home/vienchau/build/local/lib
-INCLUDE_PATH =/home/vienchau/Desktop/ws/extract-module/inc
+# INCLUDE_PATH =/home/vienchau/Desktop/ws/extract-module/inc
+INCLUDE_PATH =/home/vienchau/Desktop/extract_module/extract-module/inc
 STD = gnu99
 CFLAGS =-Wall \
 	-I./inc \
