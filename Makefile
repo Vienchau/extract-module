@@ -1,13 +1,9 @@
 .PHONY: clean, flash, all
-# Compiler settings - Can be customized.
 # CROSS_COMPILE =/home/vienchau/toolchain/arm-linux-uclibcgnueabi-20190305/arm-linux-uclibcgnueabi-20190305/bin/arm-linux-
 CC = $(CROSS_COMPILE)gcc
 AR = $(CROSS_COMPILE)ar
 AS = $(CROSS_COMPILE)as
 
-# LIBRARY_PATH =/home/vienchau/build/local/lib
-# INCLUDE_PATH =/home/vienchau/Desktop/ws/extract-module/inc
-INCLUDE_PATH =/home/vienchau/Desktop/extract_module/extract-module/inc
 STD = gnu99
 CFLAGS =-Wall \
 	-I./inc \
@@ -19,16 +15,10 @@ CFLAGS =-Wall \
 	-fsanitize=leak \
 	-g
 
-# LDFLAGS =-L$(LIBRARY_PATH) \
-	# -lasan 
-
 VPATH+=./src/
-
 
 EXEDIR=./bin
 OBJDIR = ./obj
-
-# LIB_GEN  = $(LIBDIR)/libscaninfo.so
 
 OBJ += $(OBJDIR)/main.o \
 	$(OBJDIR)/extract.o \
@@ -42,9 +32,6 @@ RM = rm
 ########################################################################
 ####################### Targets beginning here #########################
 ########################################################################
-
-# all: $(EXEDIR)/$(EXEC) $(LIB_GEN)
-
 # Builds the app
 $(EXEDIR)/$(EXEC): $(OBJ)
 	@echo =============EXE PROCESS=============

@@ -1,5 +1,9 @@
+#define __USE_XOPEN
+#define _GNU_SOURCE
+
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "extract.h"
 
 void RemoveChar(char* des, char remove) {
@@ -55,4 +59,20 @@ char* ConvertIDTopic(int topic) {
    }
 }
 
-long long ConvertTimeToEpoch() {}
+int ConvertHoursToSecond(int hour) {
+   int second = hour * 60 * 60;
+   return second;
+}
+
+time_t ConvertDatetoEpoch(int year, int month, int day, int hour) {
+   struct tm tm_date = {
+       .tm_year = year - 1900,
+       .tm_mon = month - 1,
+       .tm_mday = day,
+       .tm_hour = hour,
+       .tm_min = 0,
+       .tm_sec = 0,
+   };
+
+   return mktime(&tm_date);
+}

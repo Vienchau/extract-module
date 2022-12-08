@@ -1,6 +1,8 @@
 #ifndef __EXTRACT_H__
 #define __EXTRACT_H__
 
+#include <time.h>
+
 /* Topic defines */
 #define MAC_CLIENT_TOPIC "mac_client"
 #define WLAN_CLIENT "wlan_client_stat"
@@ -40,6 +42,8 @@ enum {
 /* Utils define */
 void RemoveChar(char* des, char remove);
 char* ConvertIDTopic(int topic);
+int ConvertHoursToSecond(int hour);
+time_t ConvertDatetoEpoch(int year, int month, int day, int hour);
 
 /* Function call define */
 /*
