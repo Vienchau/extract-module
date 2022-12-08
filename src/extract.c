@@ -2,6 +2,7 @@
 #define _GNU_SOURCE
 
 #include "extract.h"
+#include <jansson.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,6 +18,10 @@ char* FindByTopics(int TopicId, char* log) {
    char* returnLines;
    long lSize;
 
+   json_error_t error;
+
+   json_t* arrayApi = json_array();
+
    /* Convert TopicID into Topic's Name */
    char* topicString = ConvertIDTopic(TopicId);
    if (topicString == NULL) {
@@ -26,37 +31,68 @@ char* FindByTopics(int TopicId, char* log) {
    /* Get all line have the keyword  "Topic's name" */
    /* Write to temporary file */
    while (fgets(line, LINE, file_ptr)) {
+
       if (strstr(line, topicString)) {
-         char* linePointer = (char*)malloc(strlen(line) + 1);
-         strcpy(linePointer, line);
-         fputs(linePointer, file_temp);
-         free(linePointer);
+
+         // char* linePointer = (char*)malloc(strlen(line) + 1);
+         // strcpy(linePointer, line);
+         // fputs(linePointer, file_temp);
+         // free(linePointer);
+         char* temp_line_date = (char*)malloc(strlen(line) + 1);
+         strcpy(temp_line_date, line);
+         char date[21], data[strlen(temp_line_date)];
+         sscanf(temp_line_date, "%*[^2] %[^]]]: %*[^]]]: %[^\n]", date, data);
+
+         json_t* root = json_loads(data, 0, &error);
+
+         if (!root) {
+            printf("Couldn't parse json from string: %s\n", error.text);
+         } else {
+            if (json_object_size(json_object_get(root, "data")) != 0 ||
+                json_is_array(json_object_get(root, "data"))) {
+               json_object_set_new(root, "time", json_string(date));
+               print_json(root);
+               json_array_append_new(arrayApi, json_deep_copy(root));
+            }
+         }
+         json_decref(root);
+         free(temp_line_date);
       }
    }
 
+   print_json(arrayApi);
+   // printf(sizeof(arrayApi));
+
+   json_decref(arrayApi);
+
+   // fclose(file_ptr);
+   // fclose(file_temp);
+   return NULL;
+
    /* Read all line into char pointer*/
 
-   fseek(file_temp, 0L, SEEK_END);
-   lSize = ftell(file_temp);
-   rewind(file_temp);
-   returnLines = calloc(1, lSize + 1);
-   if (!returnLines)
-      fclose(file_temp), fputs("memory alloc fails", stderr), exit(1);
-   if (1 != fread(returnLines, lSize, 1, file_temp))
-      fclose(file_temp), free(returnLines), fputs("entire read fails", stderr),
-          exit(1);
+   // fseek(file_temp, 0L, SEEK_END);
+   // lSize = ftell(file_temp);
+   // rewind(file_temp);
+   // returnLines = calloc(1, lSize + 1);
+   // if (!returnLines)
+   //    fclose(file_temp), fputs("memory alloc fails", stderr), exit(1);
+   // if (1 != fread(returnLines, lSize, 1, file_temp))
+   //    fclose(file_temp), free(returnLines), fputs("entire read fails",
+   //    stderr),
+   //        exit(1);
 
-   fclose(file_ptr);
-   fclose(file_temp);
+   // fclose(file_ptr);
+   // fclose(file_temp);
 
-   /* Remove temp file */
+   // /* Remove temp file */
 
-   if (remove("temp_2") == 0) {
-      printf("temp file removed\n");
-   } else {
-      printf("temp file fail to removed\n");
-   }
-   return returnLines;
+   // if (remove("temp_2") == 0) {
+   //    printf("temp file removed\n");
+   // } else {
+   //    printf("temp file fail to removed\n");
+   // }
+   // return returnLines;
 }
 
 char* FindByTimestamp(long long Timestamp, int range, char* log,

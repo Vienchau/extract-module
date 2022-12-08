@@ -2,6 +2,7 @@
     "files.associations": {
         "extract.h": "c",
         "stdlib.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "jansson.h": "c"
     }
 }

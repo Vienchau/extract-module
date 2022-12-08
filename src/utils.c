@@ -1,10 +1,17 @@
 #define __USE_XOPEN
 #define _GNU_SOURCE
 
+#include <jansson.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include "extract.h"
+
+void print_json(json_t* root) {
+   char* temp = json_dumps(root, JSON_INDENT(4));
+   printf(" ROOT : % s", temp);
+   free(temp);
+}
 
 void RemoveChar(char* des, char remove) {
    int j, n = strlen(des);
