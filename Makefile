@@ -13,9 +13,9 @@ CFLAGS =-Wall \
 	-I$(INCLUDE_PATH) \
 	-g -Wno-incompatible-pointer-types \
 	-fPIC \
-	# -fsanitize=address \
-	# -fsanitize=leak \
-	# -g
+	-fsanitize=address \
+	-fsanitize=leak \
+	-g
 
 LDFLAGS =-L$(LIBRARY_PATH) \
 	-ljansson \

@@ -8,11 +8,10 @@
 // TODO: string to json transform
 int main() {
    /* Tue, 06 Dec 2022 00:00:00 GMT+7, 5 hours range */
-   // char* resul = FindByTopicsAndTimestamp(GET_INTERFACE,
-   //                                        ConvertDatetoEpoch(2022, 12, 6, 0),
-   //                                        ConvertHoursToSecond(5), LOG_PATH);
-   // printf("%s\n", resul);
-   // free(resul);
-   FindByTopics(GET_NAP_1, LOG_PATH);
+   char* resul = FindByTopicsAndTimestamp(GET_INTERFACE,
+                                          ConvertDatetoEpoch(2022, 12, 6, 0),
+                                          ConvertHoursToSecond(1), LOG_PATH);
+   printf("%s\n", resul);
+   free(resul);
    return 0;
 }

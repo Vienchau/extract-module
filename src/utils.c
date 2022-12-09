@@ -9,7 +9,7 @@
 
 void print_json(json_t* root) {
    char* temp = json_dumps(root, JSON_INDENT(4));
-   printf(" ROOT : % s", temp);
+   printf(" ROOT : %s", temp);
    free(temp);
 }
 
@@ -59,6 +59,9 @@ char* ConvertIDTopic(int topic) {
       }
       case GET_CHANNEL_USAGE: {
          return CHANNEL_USAGE;
+      }
+      case ALL: {
+         return LOGFILE;
       }
       default: {
          return NULL;
