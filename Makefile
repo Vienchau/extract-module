@@ -28,7 +28,7 @@ OBJDIR = ./obj
 
 OBJ += $(OBJDIR)/main.o \
 	$(OBJDIR)/extract.o \
-	$(OBJDIR)/utils.o \
+
 
 DEP = $(OBJ:%.o=%.d)
 
