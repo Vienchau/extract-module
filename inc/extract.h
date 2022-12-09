@@ -5,14 +5,14 @@
 #include <time.h>
 
 /* Topic defines */
-#define MAC_CLIENT_TOPIC "\"mac_client\""
+// #define MAC_CLIENT_TOPIC "\"mac_client\""
 #define WLAN_CLIENT "\"wlan_client_stat\""
 #define LAN_CLIENT "\"lan_client_stat\""
 #define INTERFACE_STAT "\"interface_stat\""
 #define NAP_0 "\"nap_wlan0\""
 #define NAP_1 "\"nap_wlan1\""
 #define IP_STAT "\"ip_stat\""
-#define REGISTER "\"register\""
+// #define REGISTER "\"register\""
 #define SSIDS "\"get_ssids_stat\""
 #define MEM "\"info_mem\""
 #define CPU "\"info_cpu\""
@@ -20,19 +20,19 @@
 #define LOGFILE "[LOG_INFO]"
 
 /* Keep log file define */
-#define RETURN_TEMP_FILE 0
-#define RETURN_STRING 1
+#define FILE_EMPTY 1
+#define FILE_OK 0
 #define DATE_FORMAT "yyyy-MM-dd HH:mm:ss"
 
 enum {
-   GET_MAC,
+   // GET_MAC,
    GET_WLAN,
    GET_LAN,
    GET_INTERFACE,
    GET_NAP_0,
    GET_NAP_1,  // false
    GET_IP,
-   GET_REGISTER,       // false
+   // GET_REGISTER,       // false
    GET_SSIDS,          // false
    GET_MEM,            // false
    GET_CPU,            // false
@@ -49,9 +49,13 @@ char* ConvertIDTopic(int topic);
 int ConvertHoursToSecond(int hour);
 time_t ConvertDatetoEpoch(int year, int month, int day, int hour);
 void print_json(json_t* root);
-/* Function call define */
+
+/* Function Call defines */
+char* FindByTopics(int TopicId, char* log);
+int FindByTimestamp(long long Timestamp, int range, char* log);
+
 /*
- *FindByTopics:
+*FindByTopics:
    ***Passing the TopicId which is defined as enum type:
    GET_MAC for "mac_client"
    GET_WLAN for "wlan_client_stat"
@@ -65,19 +69,6 @@ void print_json(json_t* root);
    GET_MEM for "info_mem"
    GET_CPU for "info_cpu"
    GET_CHANNEL_USAGE for "get_channel_usage"
-   ***Passing the log path for sencond argument
-*/
-char* FindByTopics(int TopicId, char* log);
-/*
- *Find all log line in range of (Timestamp - range) -> (Timestamp + range)
- *Timestamp and range was formed by Epoch Timestamp
- *Passing the log path for the third argument
- *Passing 1 for remove the temp log file and return the string holding data
- *Passing 0 for keep the temp log and return NULL
- */
-void FindByTimestamp(long long Timestamp, int range, char* log);
-
-/*
 *Find by Topic and Timestamp is finding all line of log
 that match the topicID and the range of (Timestamp- range) -> (Timestamp +
 range)

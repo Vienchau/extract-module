@@ -3,6 +3,7 @@
         "extract.h": "c",
         "stdlib.h": "c",
         "string.h": "c",
-        "jansson.h": "c"
+        "jansson.h": "c",
+        "time.h": "c"
     }
 }

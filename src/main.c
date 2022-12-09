@@ -8,10 +8,14 @@
 // TODO: string to json transform
 int main() {
    /* Tue, 06 Dec 2022 00:00:00 GMT+7, 5 hours range */
-   char* resul = FindByTopicsAndTimestamp(GET_INTERFACE,
+   char* resul = FindByTopicsAndTimestamp(GET_CHANNEL_USAGE,
                                           ConvertDatetoEpoch(2022, 12, 6, 0),
                                           ConvertHoursToSecond(1), LOG_PATH);
-   printf("%s\n", resul);
+   if (resul == NULL) {
+      fprintf(stderr, "ERROR: Could not find log file\n");
+   } else {
+      printf("%s\n", resul);
+   }
    free(resul);
    return 0;
 }
