@@ -9,11 +9,10 @@
 #include <time.h>
 
 /* ERRORR: RETURN -1 IN LINE 79 */
-char* FindByTopics(int TopicId, char* log) {
+json_t* FindByTopics(int TopicId, char* log) {
    /* Variable  Declaration */
    FILE* file_ptr;
    file_ptr = fopen(log, "r");
-   char* returnLine;
    char line[LINE];
    json_error_t error;
    json_t* arrayApi = json_array();
@@ -48,12 +47,16 @@ char* FindByTopics(int TopicId, char* log) {
          } else {
             if (json_object_size(json_object_get(root, "data")) != 0 ||
                 json_is_array(json_object_get(root, "data"))) {
-               json_object_set_new(root, "time", json_string(date));
+               json_t* root_data = json_object_get(root, "data");
+               json_object_set_new(root_data, "time", json_string(date));
 
-               json_array_append_new(arrayApi, json_deep_copy(root));
+               json_array_append_new(arrayApi, json_deep_copy(root_data));
+               json_decref(root_data);
             }
          }
+
          json_decref(root);
+
          free(temp_line_date);
       }
    }
@@ -64,15 +67,7 @@ char* FindByTopics(int TopicId, char* log) {
       fclose(file_ptr);
       return NULL;
    }
-   returnLine = json_dumps(arrayApi, JSON_COMPACT);
-   if (returnLine == NULL) {
-      printf("Error: Couldn't dump json to string\n");
-      json_decref(arrayApi);
-      fclose(file_ptr);
-      return NULL;
-   }
 
-   json_decref(arrayApi);
    fclose(file_ptr);
 
    // Remove temp files
@@ -81,7 +76,7 @@ char* FindByTopics(int TopicId, char* log) {
    } else {
       printf("temp file fail to removed\n");
    }
-   return returnLine;
+   return arrayApi;
 }
 
 int FindByTimestamp(long long Timestamp, int range, char* log) {
@@ -136,11 +131,13 @@ char* FindByTopicsAndTimestamp(int Topic, long long Timestamp, int range,
    if (result == FILE_EMPTY) {
       return NULL;
    } else {
-      char* finalFilter = FindByTopics(Topic, "temp");
+      json_t* finalFilter = json_object();
+      json_object_set_new(finalFilter, "Retturn", FindByTopics(Topic, "temp"));
       if (finalFilter == NULL) {
-         free(finalFilter);
+
          return NULL;
       }
+
       return finalFilter;
    }
 }

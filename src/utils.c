@@ -87,3 +87,53 @@ time_t ConvertDatetoEpoch(int year, int month, int day, int hour) {
 
    return mktime(&tm_date);
 }
+
+int GetMaxElementObject(json_t* root) {
+   int maxElementCount = 0;
+   if (json_is_array(root)) {
+      size_t index;
+      json_t* value;
+      json_array_foreach(root, index, value) {
+         maxElementCount = (maxElementCount < (int)json_object_size(value))
+                               ? (int)(json_object_size(value))
+                               : maxElementCount;
+      }
+   } else if (json_is_object(root)) {
+      const char* key;
+      json_t* value;
+      json_object_foreach(root, key, value) {
+         maxElementCount = (maxElementCount < (int)json_object_size(value))
+                               ? (int)(json_object_size(value))
+                               : maxElementCount;
+      }
+   }
+
+   return maxElementCount;
+}
+
+void DumpToFile(char* path, json_t* root) {
+   FILE* fp = fopen(path, "w");
+   if (fp == NULL) {
+      fprintf(stderr, "Can't open file %s", path);
+   }
+   int flag = json_dumpf(root, fp, JSON_INDENT(4));
+   fclose(fp);
+   if (flag == -1) {
+      printf("Failed to dump to file.\n");
+   }
+   printf("Dump to file: %s\n", path);
+}
+
+void CreateInterfaceStat(Interface_Stat* stat, int numberOfRecords) {
+   for (int counter = 0; counter < numberOfRecords; counter++) {
+      stat[counter].interface = "N/a";
+      memset(stat[counter].txBytes, 0,
+             ARRAY_MAX_SIZE * sizeof(unsigned long long));
+      memset(stat[counter].rxBytes, 0,
+             ARRAY_MAX_SIZE * sizeof(unsigned long long));
+      memset(stat[counter].txErrors, 0, ARRAY_MAX_SIZE * sizeof(unsigned int));
+      memset(stat[counter].rxErrors, 0, ARRAY_MAX_SIZE * sizeof(unsigned int));
+      memset(stat[counter].time, NULL, ARRAY_MAX_SIZE);
+      stat[counter].lastRecords = 0;
+   }
+}

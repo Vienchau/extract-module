@@ -24,6 +24,22 @@
 #define FILE_OK 0
 #define DATE_FORMAT "yyyy-MM-dd HH:mm:ss"
 
+#define LOG_CYCLE_MINUTES 10  // 10 MINUTES
+#define LOG_LAST 2            // 2 DAYS
+
+#define ARRAY_MAX_SIZE (LOG_LAST * 24) * 60 / LOG_CYCLE_MINUTES
+
+typedef struct {
+   char* interface;
+   unsigned long long txBytes[ARRAY_MAX_SIZE];
+   unsigned long long rxBytes[ARRAY_MAX_SIZE];
+   unsigned int txErrors[ARRAY_MAX_SIZE];
+   unsigned int rxErrors[ARRAY_MAX_SIZE];
+   char* time[ARRAY_MAX_SIZE];
+   unsigned int lastRecords;
+} Interface_Stat;
+
+void CreateInterfaceStat(Interface_Stat* stat, int numberOfRecords);
 enum {
    // GET_MAC,
    GET_WLAN,
@@ -41,7 +57,7 @@ enum {
    // DEFAULT,
 };
 
-#define LINE 4096
+#define LINE 8192
 
 /* Utils define */
 void RemoveChar(char* des, char remove);
@@ -49,9 +65,10 @@ char* ConvertIDTopic(int topic);
 int ConvertHoursToSecond(int hour);
 time_t ConvertDatetoEpoch(int year, int month, int day, int hour);
 void print_json(json_t* root);
+void DumpToFile(char* path, json_t* root);
 
 /* Function Call defines */
-char* FindByTopics(int TopicId, char* log);
+json_t* FindByTopics(int TopicId, char* log);
 int FindByTimestamp(long long Timestamp, int range, char* log);
 
 /*
@@ -76,4 +93,6 @@ range)
 char* FindByTopicsAndTimestamp(int Topic, long long Timestamp, int range,
                                char* log);
 
+char* ExtractInterfaceData(time_t time, int range);
+int GetMaxElementObject(json_t* root);
 #endif
