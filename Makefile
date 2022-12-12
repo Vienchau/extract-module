@@ -16,7 +16,7 @@ CFLAGS =-Wall \
 	-fsanitize=address \
 	-fsanitize=leak \
 	-g
-
+	
 LDFLAGS =-L$(LIBRARY_PATH) \
 	-ljansson \
 	

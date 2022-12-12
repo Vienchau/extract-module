@@ -24,55 +24,92 @@
 #define FILE_OK 0
 #define DATE_FORMAT "yyyy-MM-dd HH:mm:ss"
 
-#define LOG_CYCLE_MINUTES 10  // 10 MINUTES
-#define LOG_LAST 2            // 2 DAYS
-
+#define LOG_CYCLE_MINUTES 10 // 10 MINUTES
+#define LOG_LAST 1           // 2 DAYS
+#define EMPTY_INTERFACE "N/a"
 #define ARRAY_MAX_SIZE (LOG_LAST * 24) * 60 / LOG_CYCLE_MINUTES
 
-typedef struct {
-   char* interface;
-   unsigned long long txBytes[ARRAY_MAX_SIZE];
-   unsigned long long rxBytes[ARRAY_MAX_SIZE];
-   unsigned int txErrors[ARRAY_MAX_SIZE];
-   unsigned int rxErrors[ARRAY_MAX_SIZE];
-   char* time[ARRAY_MAX_SIZE];
-   unsigned int lastRecords;
-} Interface_Stat;
-
-void CreateInterfaceStat(Interface_Stat* stat, int numberOfRecords);
-enum {
+enum
+{
    // GET_MAC,
    GET_WLAN,
    GET_LAN,
    GET_INTERFACE,
    GET_NAP_0,
-   GET_NAP_1,  // false
+   GET_NAP_1, // false
    GET_IP,
    // GET_REGISTER,       // false
-   GET_SSIDS,          // false
-   GET_MEM,            // false
-   GET_CPU,            // false
-   GET_CHANNEL_USAGE,  // false
+   GET_SSIDS,         // false
+   GET_MEM,           // false
+   GET_CPU,           // false
+   GET_CHANNEL_USAGE, // false
    ALL,
    // DEFAULT,
 };
 
-#define LINE 8192
+#define LINE 4096
 
 /* Utils define */
-void RemoveChar(char* des, char remove);
-char* ConvertIDTopic(int topic);
+/* Remove Char from String */
+void RemoveChar(char *des, char remove);
+/* Convert ID to Topic string */
+char *ConvertIDTopic(int topic);
+/* Convert Hours to Senconds */
 int ConvertHoursToSecond(int hour);
+/* Convert Date to TimeStamp Epoch (seconds) */
 time_t ConvertDatetoEpoch(int year, int month, int day, int hour);
-void print_json(json_t* root);
-void DumpToFile(char* path, json_t* root);
+/* Print Json object in Jansson */
+void print_json(json_t *root);
+/* Dump Json Object in Jansson to File */
+void DumpToFile(char *path, json_t *root);
+
+/******** GET INTERFACE TOPIC DEFINES ********/
+typedef struct
+{
+   char *interface;
+   unsigned int lastRecords;
+   json_t *txBytes;
+   json_t *rxBytes;
+   json_t *txErrors;
+   json_t *rxErrors;
+
+} Interface_Stat;
+void CreateInterfaceStat(Interface_Stat *stat, int numberOfRecords);
+/* Print Interface struct */
+void PrintInterfaces(Interface_Stat interfacearray[], int maxElementCount);
+/* Parsers Information in Json form store in char pointer to struct */
+/* Index is the index of array data Ex: TxBytes = [1,2,3 ...index] */
+void ParserInterfaceStats(Interface_Stat *stat, json_t *root);
+/* Search the index Interface_arr that has the key
+ *(interface[index].interface == key) -> return index */
+int SearchInterfaces(Interface_Stat *interface, int ArrSize, const char *key_s);
+/* Get the max element in one Object
+ *[{
+   "wlan0": {},
+   "wlan1": {},
+   "lan0": {},
+   "lan1": {},
+   "lan2": {},
+   "lan3": {},
+   "ppp0": {},
+   "time": "2022-12-05 17:30:29"
+    },{
+   "wlan0": {},
+   "wlan1": {},
+   "lan0": {},
+   "lan1": {},
+   "time": "2022-12-05 17:30:29"
+    },]
+*MaxElements = 8
+ * */
+int GetMaxElementObject(json_t *root);
+/* Get the data of InterfaceTopic after process */
+char *ExtractInterfaceData(time_t time, int range);
 
 /* Function Call defines */
-json_t* FindByTopics(int TopicId, char* log);
-int FindByTimestamp(long long Timestamp, int range, char* log);
-
+json_t *FindByTopics(int TopicId, char *log);
+int FindByTimestamp(long long Timestamp, int range, char *log);
 /*
-*FindByTopics:
    ***Passing the TopicId which is defined as enum type:
    GET_MAC for "mac_client"
    GET_WLAN for "wlan_client_stat"
@@ -90,9 +127,7 @@ int FindByTimestamp(long long Timestamp, int range, char* log);
 that match the topicID and the range of (Timestamp- range) -> (Timestamp +
 range)
  */
-char* FindByTopicsAndTimestamp(int Topic, long long Timestamp, int range,
-                               char* log);
+char *FindByTopicsAndTimestamp(int Topic, long long Timestamp, int range,
+                               char *log);
 
-char* ExtractInterfaceData(time_t time, int range);
-int GetMaxElementObject(json_t* root);
 #endif
