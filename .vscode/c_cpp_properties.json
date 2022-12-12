@@ -4,7 +4,6 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/vienchau/Desktop/workspace/extract/extract-module/inc",
                 "/home/vienchau/build/local/include"
             ],
             "defines": [],
