@@ -199,3 +199,73 @@ int SearchInterfaces(Interface_Stat *interface, int ArrSize, const char *key_s)
    }
    return -1;
 }
+
+/************* WLAN_CLIENT_STAT IMPLEMENTATION *****************
+********************************************************
+********************************************************
+********************************************************
+********************************************************
+********************************************************
+********************************************************/
+void CreateWlanClientStat(Wlan_Client_Stat *stat, int numberOfRecords)
+{
+   for (int counter = 0; counter < numberOfRecords; counter++)
+   {
+      stat[counter].last_record = 0;
+      stat[counter].mac_name = "N/a";
+      stat[counter].host_name = NULL;
+      stat[counter].txBytes = 0;
+      stat[counter].rxBytes = 0;
+      stat[counter].rssi = json_array();
+   }
+}
+
+void ParserWlanClientStats(Wlan_Client_Stat *stat, json_t *root)
+{
+   if (json_object_size(root) == 0)
+   {
+      return;
+   }
+   unsigned int lastRecords = json_integer_value(json_object_get(root, "last_record"));
+   stat->last_record = lastRecords;
+   printf("Bug: %d\n", 1);
+   // stat->host_name = (char *)malloc(strlen(json_string_value(json_object_get(root, "Hostname"))) + 1);
+   printf("Bug: %d\n", 2);
+   // ? strcpy(stat->host_name, json_string_value(json_object_get(root, "Hostname")));
+   printf("Bug: %d\n", 3);
+   stat->host_name = json_string_value(json_object_get(root, "Hostname"));
+   stat->txBytes = json_integer_value(json_object_get(root, "TxBytes"));
+   stat->rxBytes = json_integer_value(json_object_get(root, "RxBytes"));
+   json_array_append_new(stat->rssi, json_object_get(root, "RSSI"));
+}
+
+// int SearchMacName(Wlan_Client_Stat *stat, int ArrSize, const char *key_s)
+// {
+//    int i = 0;
+
+//    for (i; i < ArrSize; i++)
+//    {
+//       if (strcmp(stat[i].mac_name, key_s) == 0)
+//       {
+//          return i;
+//       }
+//       printf("i value: %d\n", i);
+//    }
+
+//    return -1;
+// }
+
+int SearchMacName(Wlan_Client_Stat *stat, const char *key_s)
+{
+   int i = 0;
+
+   for (i; i < vector_size(stat); i++)
+   {
+      if (strcmp(stat[i].mac_name, key_s) == 0)
+      {
+         return i;
+      }
+   }
+
+   return -1;
+}

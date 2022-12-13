@@ -8,7 +8,7 @@
 #include <string.h>
 #include <time.h>
 
-#define LOG_PATH "./log/mqtt_log"
+#define LOG_PATH "./log/mqtt_log.1"
 
 /* ERRORR: RETURN -1 IN LINE 79 */
 json_t *FindByTopics(int TopicId, char *log)
@@ -34,7 +34,7 @@ json_t *FindByTopics(int TopicId, char *log)
    /* Get all line have the keyword  "Topic's name" */
    while (fgets(line, LINE, file_ptr))
    {
-      if (strstr(line, topicString))
+      if (strstr(line, topicString) && strstr(line, LOGFILE))
       {
          foundTopics = 1;
          char *temp_line_date = (char *)malloc(strlen(line) + 1);
@@ -168,8 +168,7 @@ char *FindByTopicsAndTimestamp(int Topic, long long Timestamp, int range, char *
 char *ExtractInterfaceData(time_t time, int range)
 {
    /* GET OBJECT RAW DATA FROM  LOG FILE */
-   json_t *resul =
-       FindByTopicsAndTimestamp(GET_INTERFACE, time, range, LOG_PATH);
+   json_t *resul = FindByTopicsAndTimestamp(GET_INTERFACE, time, range, LOG_PATH);
    if (resul == NULL)
    {
       fprintf(stderr, "ERROR: Could not find log file\n");

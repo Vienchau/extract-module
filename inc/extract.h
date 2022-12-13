@@ -106,6 +106,23 @@ int GetMaxElementObject(json_t *root);
 /* Get the data of InterfaceTopic after process */
 char *ExtractInterfaceData(time_t time, int range);
 
+/******** GET WLAN TOPIC DEFINES ********/
+typedef struct
+{
+   char *mac_name;
+   unsigned int last_record;
+   char *host_name;
+   unsigned long long txBytes;
+   unsigned long long rxBytes;
+   json_t *rssi;
+} Wlan_Client_Stat;
+
+char *ExtractWlanData(time_t time, int range);
+void CreateWlanClientStat(Wlan_Client_Stat *stat, int numberOfRecords);
+void ParserWlanClientStats(Wlan_Client_Stat *stat, json_t *root);
+// int SearchMacName(Wlan_Client_Stat *stat, int ArrSize, const char *key_s);
+int SearchMacName(Wlan_Client_Stat *stat, const char *key_s);
+
 /* Function Call defines */
 json_t *FindByTopics(int TopicId, char *log);
 int FindByTimestamp(long long Timestamp, int range, char *log);
