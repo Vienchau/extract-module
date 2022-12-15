@@ -7,6 +7,7 @@
 #include <string.h>
 #include <time.h>
 #include "extract.h"
+#include "vec.h"
 
 void print_json(json_t *root)
 {
@@ -160,39 +161,40 @@ void DumpToFile(char *path, json_t *root)
 ********************************************************
 ********************************************************
 ********************************************************/
-void CreateInterfaceStat(Interface_Stat *stat, int numberOfRecords)
-{
-   for (int counter = 0; counter < numberOfRecords; counter++)
-   {
-      stat[counter].interface = EMPTY_INTERFACE;
-      stat[counter].lastRecords = 0;
-      stat[counter].txBytes = json_array();
-      stat[counter].rxBytes = json_array();
-      stat[counter].txErrors = json_array();
-      stat[counter].rxErrors = json_array();
-   }
-}
 
-void ParserInterfaceStats(Interface_Stat *stat, json_t *root)
+void ParserInterfaceNew(Interface_Stat **interface, json_t *value, const char *key, Interface_Stat *interface_temp)
 {
-   if (json_object_size(root) == 0)
-   {
-      return;
-   }
-   unsigned int lastRecords =
-       json_integer_value(json_object_get(root, "last_record"));
-   stat->lastRecords = lastRecords;
-   json_array_append_new(stat->txBytes, json_object_get(root, "TxBytes"));
-   json_array_append_new(stat->rxBytes, json_object_get(root, "RxBytes"));
-   json_array_append_new(stat->txErrors, json_object_get(root, "TxErrors"));
-   json_array_append_new(stat->rxErrors, json_object_get(root, "RxErrors"));
-}
+   interface_temp->last_record = json_array();
+   json_array_append_new(interface_temp->last_record, json_object_get(value, "last_record"));
 
-int SearchInterfaces(Interface_Stat *interface, int ArrSize, const char *key_s)
+   interface_temp->txBytes = json_array();
+   json_array_append_new(interface_temp->txBytes, json_object_get(value, "TxBytes"));
+
+   interface_temp->rxBytes = json_array();
+   json_array_append_new(interface_temp->rxBytes, json_object_get(value, "RxBytes"));
+
+   interface_temp->txErrors = json_array();
+   json_array_append_new(interface_temp->txErrors, json_object_get(value, "TxErrors"));
+
+   interface_temp->rxErrors = json_array();
+   json_array_append_new(interface_temp->rxErrors, json_object_get(value, "RxErrors"));
+
+   interface_temp->interface = key;
+}
+void ParserInterfaceStats(Interface_Stat *interface, json_t *value, int index_interface)
 {
-   for (int i = 0; i < ArrSize; i++)
+   json_array_append_new(interface[index_interface].last_record, json_object_get(value, "last_record"));
+   json_array_append_new(interface[index_interface].txBytes, json_object_get(value, "TxBytes"));
+   json_array_append_new(interface[index_interface].rxBytes, json_object_get(value, "RxBytes"));
+   json_array_append_new(interface[index_interface].txErrors, json_object_get(value, "TxErrors"));
+   json_array_append_new(interface[index_interface].rxErrors, json_object_get(value, "RxErrors"));
+}
+int SearchInterfaces(Interface_Stat *stat, const char *key_s)
+{
+
+   for (int i = 0; i < vector_size(stat); i++)
    {
-      if (strcmp(interface[i].interface, key_s) == 0)
+      if (strcmp(stat[i].interface, key_s) == 0)
       {
          return i;
       }
@@ -207,65 +209,38 @@ int SearchInterfaces(Interface_Stat *interface, int ArrSize, const char *key_s)
 ********************************************************
 ********************************************************
 ********************************************************/
-void CreateWlanClientStat(Wlan_Client_Stat *stat, int numberOfRecords)
+
+void ParserWlanClientStatsNew(Wlan_Client_Stat **wlan_clients, json_t *value, const char *key, Wlan_Client_Stat *wlan_clients_temp)
 {
-   for (int counter = 0; counter < numberOfRecords; counter++)
-   {
-      stat[counter].last_record = 0;
-      stat[counter].mac_name = "N/a";
-      stat[counter].host_name = NULL;
-      stat[counter].txBytes = 0;
-      stat[counter].rxBytes = 0;
-      stat[counter].rssi = json_array();
-   }
-}
+   // Wlan_Client_Stat *wlan_clients_temp = vector_add_asg(&(*wlan_clients));
+   wlan_clients_temp->last_record = json_array();
+   json_array_append_new(wlan_clients_temp->last_record, json_object_get(value, "last_record"));
 
-void ParserWlanClientStats(Wlan_Client_Stat *stat, json_t *root)
+   wlan_clients_temp->rssi = json_array();
+   json_array_append_new(wlan_clients_temp->rssi, json_object_get(value, "RSSI"));
+
+   wlan_clients_temp->mac_name = key;
+   wlan_clients_temp->host_name = json_string_value(json_object_get(value, "Hostname"));
+   wlan_clients_temp->txBytes = json_integer_value(json_object_get(value, "TxBytes"));
+   wlan_clients_temp->rxBytes = json_integer_value(json_object_get(value, "RxBytes"));
+}
+void ParserWlanClientStats(Wlan_Client_Stat *wlan_clients, json_t *value, int index_interface)
 {
-   if (json_object_size(root) == 0)
-   {
-      return;
-   }
-   unsigned int lastRecords = json_integer_value(json_object_get(root, "last_record"));
-   stat->last_record = lastRecords;
-   printf("Bug: %d\n", 1);
-   // stat->host_name = (char *)malloc(strlen(json_string_value(json_object_get(root, "Hostname"))) + 1);
-   printf("Bug: %d\n", 2);
-   // ? strcpy(stat->host_name, json_string_value(json_object_get(root, "Hostname")));
-   printf("Bug: %d\n", 3);
-   stat->host_name = json_string_value(json_object_get(root, "Hostname"));
-   stat->txBytes = json_integer_value(json_object_get(root, "TxBytes"));
-   stat->rxBytes = json_integer_value(json_object_get(root, "RxBytes"));
-   json_array_append_new(stat->rssi, json_object_get(root, "RSSI"));
+   wlan_clients[index_interface].txBytes = json_integer_value(json_object_get(value, "TxBytes"));
+   wlan_clients[index_interface].rxBytes = json_integer_value(json_object_get(value, "RxBytes"));
+   json_array_append_new(wlan_clients[index_interface].rssi, json_object_get(value, "RSSI"));
+   json_array_append_new(wlan_clients[index_interface].last_record, json_object_get(value, "last_record"));
 }
-
-// int SearchMacName(Wlan_Client_Stat *stat, int ArrSize, const char *key_s)
-// {
-//    int i = 0;
-
-//    for (i; i < ArrSize; i++)
-//    {
-//       if (strcmp(stat[i].mac_name, key_s) == 0)
-//       {
-//          return i;
-//       }
-//       printf("i value: %d\n", i);
-//    }
-
-//    return -1;
-// }
 
 int SearchMacName(Wlan_Client_Stat *stat, const char *key_s)
 {
-   int i = 0;
 
-   for (i; i < vector_size(stat); i++)
+   for (int i = 0; i < vector_size(stat); i++)
    {
       if (strcmp(stat[i].mac_name, key_s) == 0)
       {
          return i;
       }
    }
-
    return -1;
 }

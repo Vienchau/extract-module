@@ -66,23 +66,23 @@ void DumpToFile(char *path, json_t *root);
 /******** GET INTERFACE TOPIC DEFINES ********/
 typedef struct
 {
-   char *interface;
-   unsigned int lastRecords;
+   const char *interface;
+   json_t *last_record;
    json_t *txBytes;
    json_t *rxBytes;
    json_t *txErrors;
    json_t *rxErrors;
 
 } Interface_Stat;
-void CreateInterfaceStat(Interface_Stat *stat, int numberOfRecords);
+
 /* Print Interface struct */
-void PrintInterfaces(Interface_Stat interfacearray[], int maxElementCount);
 /* Parsers Information in Json form store in char pointer to struct */
 /* Index is the index of array data Ex: TxBytes = [1,2,3 ...index] */
-void ParserInterfaceStats(Interface_Stat *stat, json_t *root);
+void ParserInterfaceStats(Interface_Stat *interface, json_t *value, int index_interface);
+void ParserInterfaceNew(Interface_Stat **interface, json_t *value, const char *key, Interface_Stat *interface_temp);
 /* Search the index Interface_arr that has the key
  *(interface[index].interface == key) -> return index */
-int SearchInterfaces(Interface_Stat *interface, int ArrSize, const char *key_s);
+int SearchInterfaces(Interface_Stat *stat, const char *key_s);
 /* Get the max element in one Object
  *[{
    "wlan0": {},
@@ -109,17 +109,18 @@ char *ExtractInterfaceData(time_t time, int range);
 /******** GET WLAN TOPIC DEFINES ********/
 typedef struct
 {
-   char *mac_name;
-   unsigned int last_record;
-   char *host_name;
+   const char *mac_name;
+   json_t *last_record;
+   const char *host_name;
    unsigned long long txBytes;
    unsigned long long rxBytes;
    json_t *rssi;
 } Wlan_Client_Stat;
 
 char *ExtractWlanData(time_t time, int range);
-void CreateWlanClientStat(Wlan_Client_Stat *stat, int numberOfRecords);
-void ParserWlanClientStats(Wlan_Client_Stat *stat, json_t *root);
+void ParserWlanClientStats(Wlan_Client_Stat *wlan_clients, json_t *value, int index_interface);
+void ParserWlanClientStatsNew(Wlan_Client_Stat **wlan_clients, json_t *value, const char *key, Wlan_Client_Stat *wlan_clients_temp);
+
 // int SearchMacName(Wlan_Client_Stat *stat, int ArrSize, const char *key_s);
 int SearchMacName(Wlan_Client_Stat *stat, const char *key_s);
 
