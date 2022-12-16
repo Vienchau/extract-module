@@ -15,7 +15,7 @@ CFLAGS =-Wall \
 	-fPIC \
 	-fsanitize=address \
 	-fsanitize=leak \
-	-g
+	# -g
 	
 LDFLAGS =-L$(LIBRARY_PATH) \
 	-ljansson \
@@ -30,6 +30,7 @@ OBJ += $(OBJDIR)/main.o \
 	$(OBJDIR)/extract.o \
 	$(OBJDIR)/utils.o \
 	$(OBJDIR)/test_function.o \
+	$(OBJDIR)/vec.o \
 
 
 

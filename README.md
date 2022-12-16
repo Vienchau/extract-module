@@ -107,3 +107,54 @@ char *ExtractInterfaceData(time_t time, int range)
             ...},
 ]
 ```
+
+### Extract Wlan client topic data into JSON array:
+
+```c
+char *ExtractWlanData(time_t time, int range)
+```
+
+**Parameters:**
+
+- `time`: Specified by epoch timestamp.
+- `range`: Range of log file. The function will filter in range of (Timestamp - range) ---- (Timestamp + range).
+- `return`: Return char pointer hold JSON formed like:
+
+```bash
+[
+    {
+        "Macname": "32:da:e5:7e:63:a2",
+        "Hostname": "unknown_32:da:e5:7e:63:a2",
+        "TxBytes": 32986558,
+        "RxBytes": 29915893,
+        "Timestamp": [
+            1670894195,
+            1670894795,
+            1670895395,
+            1670895995,
+            1670896595,
+            1670897195,
+            1670897795,
+            1670898395,
+            1670898995,
+            1670899595,
+            1670900195
+        ],
+        "RSSI": [
+            -62,
+            -73,
+            -62,
+            -63,
+            -60,
+            -63,
+            -62,
+            -65,
+            -63,
+            -74,
+            -74
+        ]
+    },
+    {
+            ...},
+]
+```
