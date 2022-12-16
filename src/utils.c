@@ -162,7 +162,7 @@ void DumpToFile(char *path, json_t *root)
 ********************************************************
 ********************************************************/
 
-void ParserInterfaceNew(Interface_Stat **interface, json_t *value, const char *key, Interface_Stat *interface_temp)
+void ParserInterfaceNew(json_t *value, const char *key, Interface_Stat *interface_temp)
 {
    interface_temp->last_record = json_array();
    json_array_append_new(interface_temp->last_record, json_object_get(value, "last_record"));
@@ -210,7 +210,7 @@ int SearchInterfaces(Interface_Stat *stat, const char *key_s)
 ********************************************************
 ********************************************************/
 
-void ParserWlanClientStatsNew(Wlan_Client_Stat **wlan_clients, json_t *value, const char *key, Wlan_Client_Stat *wlan_clients_temp)
+void ParserWlanClientStatsNew(json_t *value, const char *key, Wlan_Client_Stat *wlan_clients_temp)
 {
    // Wlan_Client_Stat *wlan_clients_temp = vector_add_asg(&(*wlan_clients));
    wlan_clients_temp->last_record = json_array();
