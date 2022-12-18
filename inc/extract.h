@@ -124,8 +124,20 @@ void ParserWlanClientStatsNew(json_t *value, const char *key, Wlan_Client_Stat *
 // int SearchMacName(Wlan_Client_Stat *stat, int ArrSize, const char *key_s);
 int SearchMacName(Wlan_Client_Stat *stat, const char *key_s);
 
+/******** GET SSIDS STAT TOPIC DEFINES ********/
+typedef struct
+{
+   const char *wlan;
+   unsigned long long txBytes;
+   unsigned long long rxBytes;
+   long long txFailures;
+   long long rxErrors;
+} Ssids_Stat;
+char *ExtractSsidData(time_t time, int range);
+
 /* Function Call defines */
-json_t *FindByTopics(int TopicId, char *log);
+json_t *
+FindByTopics(int TopicId, char *log);
 int FindByTimestamp(long long Timestamp, int range, char *log);
 /*
    ***Passing the TopicId which is defined as enum type:
