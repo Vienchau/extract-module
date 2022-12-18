@@ -158,3 +158,35 @@ char *ExtractWlanData(time_t time, int range)
             ...},
 ]
 ```
+
+### Extract SSID per Channel topic data into JSON array:
+
+```c
+char *ExtractSsidData(time_t time, int range)
+```
+
+**Parameters:**
+
+- `time`: Specified by epoch timestamp.
+- `range`: Range of log file. The function will filter in range of (Timestamp - range) ---- (Timestamp + range).
+- `return`: Return char pointer hold JSON formed like:
+
+```bash
+[]
+    {
+        "Wlan": "wlan0",
+        "TxBytes": 991465498,
+        "RxBytes": 858371559,
+        "TxFailures": 1109,
+        "RxErrors": 142761
+    },
+    {
+        "Wlan": "wlan1",
+        "TxBytes": 0,
+        "RxBytes": 163503578,
+        "TxFailures": 0,
+        "RxErrors": 0
+    }
+]
+]
+```

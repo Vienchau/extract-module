@@ -150,6 +150,7 @@ void DumpToFile(char *path, json_t *root)
    if (flag == -1)
    {
       printf("Failed to dump to file.\n");
+      return;
    }
    printf("Dump to file: %s\n", path);
 }

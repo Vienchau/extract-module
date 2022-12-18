@@ -2,6 +2,7 @@
 #define _GNU_SOURCE
 
 #include "extract.h"
+#include "vec.h"
 #include <jansson.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -316,5 +317,61 @@ char *ExtractInterfaceData(time_t time, int range)
    json_decref(resul);
    vector_free(interface);
 
+   return NULL;
+}
+
+char *ExtractSsidData(time_t time, int range)
+{
+   json_t *result = FindByTopicsAndTimestamp(GET_SSIDS, time, range, LOG_PATH);
+   if (result == NULL)
+   {
+      fprintf(stderr, "ERROR: Could not find log file\n");
+      return NULL;
+   }
+
+   json_t *returnArray = json_object_get(result, "Retturn");
+   if (returnArray == NULL)
+   {
+      fprintf(stderr, "ERROR: Could not find log file\n");
+      return NULL;
+   }
+
+   Ssids_Stat ssids[2];
+
+   int finalItems = json_array_size(returnArray) - 1;
+   // json_t *finalItemObject = json_array_get(returnArray, finalItems);
+   json_t *finalArray = json_array();
+   json_array_append_new(finalArray, json_array_get(json_array_get(returnArray, finalItems), 0));
+   json_array_append_new(finalArray, json_array_get(json_array_get(returnArray, finalItems - 1), 0));
+
+   json_t *value;
+   size_t index;
+   json_array_foreach(finalArray, index, value)
+   {
+      ssids[index].wlan = json_string_value(json_object_get(value, "Wlan"));
+      ssids[index].txBytes = json_integer_value(json_object_get(value, "TxBytes"));
+      ssids[index].rxBytes = json_integer_value(json_object_get(value, "RxBytes"));
+      ssids[index].txFailures = json_integer_value(json_object_get(value, "TxFailures"));
+      ssids[index].rxErrors = json_integer_value(json_object_get(value, "RxErrors"));
+   }
+
+   json_t *arrayROOT = json_array();
+   for (int c = 0; c < 2; c++)
+   {
+      json_t *returnROOT = json_object();
+      json_object_set_new(returnROOT, "Wlan", json_string(ssids[c].wlan));
+      json_object_set_new(returnROOT, "TxBytes", json_integer(ssids[c].txBytes));
+      json_object_set_new(returnROOT, "RxBytes", json_integer(ssids[c].rxBytes));
+      json_object_set_new(returnROOT, "TxFailures", json_integer(ssids[c].txFailures));
+      json_object_set_new(returnROOT, "RxErrors", json_integer(ssids[c].rxErrors));
+      json_array_append_new(arrayROOT, returnROOT);
+   }
+
+   DumpToFile("FINAL.json", arrayROOT);
+
+   json_decref(arrayROOT);
+   json_decref(finalArray);
+   json_decref(returnArray);
+   json_decref(result);
    return NULL;
 }
