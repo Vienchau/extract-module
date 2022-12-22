@@ -70,39 +70,17 @@ typedef struct
    json_t *rxBytes;
    json_t *txErrors;
    json_t *rxErrors;
-
 } interface_stat_t;
 
 /* Print Interface struct */
 /* Parsers Information in Json form store in char pointer to struct */
-/* Index is the index of array data Ex: TxBytes = [1,2,3 ...index] */
 void ParserInterfaceStats(interface_stat_t *interface, json_t *value, int index_interface);
 void ParserInterfaceNew(json_t *value, const char *key, interface_stat_t *interface_temp);
 /* Search the index Interface_arr that has the key
  *(interface[index].interface == key) -> return index */
 int SearchInterfaces(interface_stat_t *stat, const char *key_s);
-/* Get the max element in one Object
- *[{
-   "wlan0": {},
-   "wlan1": {},
-   "lan0": {},
-   "lan1": {},
-   "lan2": {},
-   "lan3": {},
-   "ppp0": {},
-   "time": "2022-12-05 17:30:29"
-    },{
-   "wlan0": {},
-   "wlan1": {},
-   "lan0": {},
-   "lan1": {},
-   "time": "2022-12-05 17:30:29"
-    },]
-*MaxElements = 8
- * */
-int GetMaxElementObject(json_t *root);
 /* Get the data of InterfaceTopic after process */
-char *ExtractInterfaceData(time_t time, int range);
+json_t *ExtractInterfaceData(time_t time, int range);
 
 /******** GET WLAN TOPIC DEFINES ********/
 typedef struct
@@ -115,7 +93,7 @@ typedef struct
    json_t *rssi;
 } wlan_client_stat_t;
 
-char *ExtractWlanData(time_t time, int range);
+json_t *ExtractWlanData(time_t time, int range);
 void ParserWlanClientStats(wlan_client_stat_t *wlan_clients, json_t *value, int index_interface);
 void ParserWlanClientStatsNew(json_t *value, const char *key, wlan_client_stat_t *wlan_clients_temp);
 
@@ -123,7 +101,7 @@ void ParserWlanClientStatsNew(json_t *value, const char *key, wlan_client_stat_t
 int SearchMacName(wlan_client_stat_t *stat, const char *key_s);
 
 /******** GET SSIDS STAT TOPIC DEFINES ********/
-char *ExtractSsidData(time_t time, int range);
+json_t *ExtractSsidData(time_t time, int range);
 
 /******** GET LAN STAT TOPIC DEFINES ********/
 typedef struct
@@ -134,18 +112,18 @@ typedef struct
    const char *ip;
 } lan_client_stat_t;
 
-char *ExtractLanData(time_t time, int range);
+json_t *ExtractLanData(time_t time, int range);
 void ParserLanClientStatsNew(json_t *value, const char *key, lan_client_stat_t *lan_clients_temp);
 int SearchMacName_Lan(lan_client_stat_t *stat, const char *key_s);
 
 /******** GET IP STAT TOPIC DEFINES ********/
-char *ExtractIpData(time_t time, int range);
+json_t *ExtractIpData(time_t time, int range);
 
 /******** GET MEM STAT TOPIC DEFINES ********/
-char *ExtractMemData(time_t time, int range);
+json_t *ExtractMemData(time_t time, int range);
 
 /******** GET CPU STAT TOPIC DEFINES ********/
-char *ExtractCpuData(time_t time, int range);
+json_t *ExtractCpuData(time_t time, int range);
 
 /******** GET CPU STAT TOPIC DEFINES ********/
 typedef struct
@@ -157,7 +135,7 @@ typedef struct
    json_t *other_ap_time;
 } channel_usage_t;
 
-char *ExtractChannelUsageData(time_t time, int range);
+json_t *ExtractChannelUsageData(time_t time, int range);
 void ChannelUsageInit(channel_usage_t *channel, const char *channeName);
 void ChannelUsageClear(channel_usage_t *channel);
 /* Function Call defines */
@@ -165,19 +143,7 @@ json_t *FindByTopics(int TopicId, char *log);
 int FindByTimestamp(long long Timestamp, int range, char *log);
 
 /*
-   ***Passing the TopicId which is defined as enum type:
-   GET_MAC for "mac_client"
-   GET_WLAN for "wlan_client_stat"
-   GET_INTERFACE for "lan_client_stat"
-   GET_NAP_0 for "interface_stat"
-   GET_NAP_1 for "nap_wlan0"
-   GET_LAN for "nap_wlan1"
-   GET_IP for "ip_stat"
-   GET_REGISTER for "register"
-   GET_SSIDS for "get_ssids_stat"
-   GET_MEM for "info_mem"
-   GET_CPU for "info_cpu"
-   GET_CHANNEL_USAGE for "get_channel_usage"
+   ***Passing the TopicId which is defined as enum type.
 *Find by Topic and Timestamp is finding all line of log
 that match the topicID and the range of (Timestamp- range) -> (Timestamp +
 range)
@@ -185,4 +151,5 @@ range)
 char *FindByTopicsAndTimestamp(int Topic, long long Timestamp, int range,
                                char *log);
 
+void ExtractAllData();
 #endif

@@ -165,7 +165,7 @@ char *FindByTopicsAndTimestamp(int Topic, long long Timestamp, int range, char *
    }
 }
 
-char *ExtractWlanData(time_t time, int range)
+json_t *ExtractWlanData(time_t time, int range)
 {
    /* GET OBJECT RAW DATA FROM  LOG FILE */
    json_t *resul = FindByTopicsAndTimestamp(GET_WLAN, time, range, LOG_PATH);
@@ -231,17 +231,17 @@ char *ExtractWlanData(time_t time, int range)
       json_array_append_new(arrayROOT, returnROOT);
    }
 
-   DumpToFile("FinalFilter_WLAN.json", arrayROOT);
-
+   // DumpToFile("FinalFilter_WLAN.json", arrayROOT);
+   json_t *finalJson = json_deep_copy(arrayROOT);
    json_decref(arrayROOT);
    json_decref(returnArray);
    json_decref(resul);
    vector_free(wlan_clients);
 
-   return NULL;
+   return finalJson;
 }
 
-char *ExtractInterfaceData(time_t time, int range)
+json_t *ExtractInterfaceData(time_t time, int range)
 {
    /* GET OBJECT RAW DATA FROM  LOG FILE */
    json_t *resul = FindByTopicsAndTimestamp(GET_INTERFACE, time, range, LOG_PATH);
@@ -310,17 +310,18 @@ char *ExtractInterfaceData(time_t time, int range)
       json_array_append_new(arrayROOT, returnROOT);
    }
 
-   DumpToFile("FinalFilter_INTERFACE.json", arrayROOT);
+   // DumpToFile("FinalFilter_INTERFACE.json", arrayROOT);
 
+   json_t *finalJson = json_deep_copy(arrayROOT);
    json_decref(arrayROOT);
    json_decref(returnArray);
    json_decref(resul);
    vector_free(interface);
 
-   return NULL;
+   return finalJson;
 }
 
-char *ExtractSsidData(time_t time, int range)
+json_t *ExtractSsidData(time_t time, int range)
 {
    json_t *result = FindByTopicsAndTimestamp(GET_SSIDS, time, range, LOG_PATH);
    if (result == NULL)
@@ -342,14 +343,16 @@ char *ExtractSsidData(time_t time, int range)
    json_array_append_new(arrayROOT, json_array_get(json_array_get(returnArray, index - 1), 0));
    json_array_append_new(arrayROOT, json_array_get(json_array_get(returnArray, index - 2), 0));
 
-   DumpToFile("FINAL.json", arrayROOT);
+   // DumpToFile("FINAL.json", arrayROOT);
+   json_t *finalJson = json_deep_copy(arrayROOT);
    json_decref(arrayROOT);
    json_decref(returnArray);
    json_decref(result);
-   return NULL;
+
+   return finalJson;
 }
 
-char *ExtractLanData(time_t time, int range)
+json_t *ExtractLanData(time_t time, int range)
 {
    json_t *resul = FindByTopicsAndTimestamp(GET_LAN, time, range, LOG_PATH);
    if (resul == NULL)
@@ -410,17 +413,18 @@ char *ExtractLanData(time_t time, int range)
       json_array_append_new(arrayROOT, returnROOT);
    }
 
-   DumpToFile("FinalFilter_WLAN.json", arrayROOT);
+   // DumpToFile("FinalFilter_WLAN.json", arrayROOT);
 
+   json_t *finalJson = json_deep_copy(arrayROOT);
    json_decref(arrayROOT);
    json_decref(returnArray);
    json_decref(resul);
    vector_free(lan_clients);
 
-   return NULL;
+   return finalJson;
 }
 
-char *ExtractIpData(time_t time, int range)
+json_t *ExtractIpData(time_t time, int range)
 {
    json_t *result = FindByTopicsAndTimestamp(GET_IP, time, range, LOG_PATH);
    if (result == NULL)
@@ -448,16 +452,16 @@ char *ExtractIpData(time_t time, int range)
       json_array_append_new(arrayROOT, value);
    }
 
-   DumpToFile("test.json", arrayROOT);
-
+   // DumpToFile("test.json", arrayROOT);
+   json_t *finalJson = json_deep_copy(arrayROOT);
    json_decref(arrayROOT);
    json_decref(returnArray);
    json_decref(result);
 
-   return NULL;
+   return finalJson;
 }
 
-char *ExtractMemData(time_t time, int range)
+json_t *ExtractMemData(time_t time, int range)
 {
    json_t *result = FindByTopicsAndTimestamp(GET_MEM, time, range, LOG_PATH);
    if (result == NULL)
@@ -487,7 +491,8 @@ char *ExtractMemData(time_t time, int range)
 
    json_object_set_new(root, "mem_used", mem_array);
 
-   DumpToFile("test.json", root);
+   // DumpToFile("test.json", root);
+   json_t *finalJson = json_deep_copy(root);
 
    json_decref(tempRoot);
    json_decref(mem_array);
@@ -495,10 +500,10 @@ char *ExtractMemData(time_t time, int range)
    json_decref(returnArray);
    json_decref(result);
 
-   return NULL;
+   return finalJson;
 }
 
-char *ExtractCpuData(time_t time, int range)
+json_t *ExtractCpuData(time_t time, int range)
 {
    json_t *result = FindByTopicsAndTimestamp(GET_CPU, time, range, LOG_PATH);
    if (result == NULL)
@@ -514,7 +519,7 @@ char *ExtractCpuData(time_t time, int range)
       return NULL;
    }
 
-   json_t *mem_array = json_array();
+   json_t *cpu_array = json_array();
    json_t *root = json_object();
    json_t *tempRoot;
 
@@ -523,23 +528,25 @@ char *ExtractCpuData(time_t time, int range)
    json_array_foreach(returnArray, index, value)
    {
       tempRoot = json_array_get(value, 0);
-      json_array_append_new(mem_array, json_object_get(tempRoot, "10minutes"));
+      json_array_append_new(cpu_array, json_object_get(tempRoot, "10minutes"));
    }
 
-   json_object_set_new(root, "cpu", mem_array);
+   json_object_set_new(root, "cpu", cpu_array);
 
-   DumpToFile("test.json", root);
+   // DumpToFile("test.json", root);
+   json_t *finalJson = json_deep_copy(root);
 
    json_decref(tempRoot);
-   json_decref(mem_array);
+   json_decref(cpu_array);
    json_decref(root);
+
    json_decref(returnArray);
    json_decref(result);
 
-   return NULL;
+   return finalJson;
 }
 
-char *ExtractChannelUsageData(time_t time, int range)
+json_t *ExtractChannelUsageData(time_t time, int range)
 {
    json_t *result = FindByTopicsAndTimestamp(GET_CHANNEL_USAGE, time, range, LOG_PATH);
    if (result == NULL)
@@ -596,11 +603,10 @@ char *ExtractChannelUsageData(time_t time, int range)
       json_array_append_new(arrayROOT, tempRoot_2);
    }
 
-   DumpToFile("channelUsage.json", arrayROOT);
-
+   // DumpToFile("channelUsage.json", arrayROOT);
+   json_t *finalJson = json_deep_copy(arrayROOT);
    json_decref(arrayROOT);
-
    json_decref(result);
 
-   return NULL;
+   return finalJson;
 }
