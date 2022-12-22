@@ -1,0 +1,314 @@
+[
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 71,
+            "DUT_Time": 1,
+            "other_APs_Time": 10,
+            "free_Time": 18,
+            "ch_load": 11,
+            "ch_load(includeinterence)": 82
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 66,
+            "DUT_Time": 36,
+            "other_APs_Time": 0,
+            "free_Time": 0,
+            "ch_load": 34,
+            "ch_load(includeinterence)": 100
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 79,
+            "DUT_Time": 1,
+            "other_APs_Time": 3,
+            "free_Time": 17,
+            "ch_load": 4,
+            "ch_load(includeinterence)": 83
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 62,
+            "DUT_Time": 61,
+            "other_APs_Time": 0,
+            "free_Time": 0,
+            "ch_load": 38,
+            "ch_load(includeinterence)": 100
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 87,
+            "DUT_Time": 2,
+            "other_APs_Time": 11,
+            "free_Time": 0,
+            "ch_load": 13,
+            "ch_load(includeinterence)": 100
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 56,
+            "DUT_Time": 165,
+            "other_APs_Time": 0,
+            "free_Time": 3,
+            "ch_load": 41,
+            "ch_load(includeinterence)": 97
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 12,
+            "DUT_Time": 6,
+            "other_APs_Time": 29,
+            "free_Time": 53,
+            "ch_load": 35,
+            "ch_load(includeinterence)": 47
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 63,
+            "DUT_Time": 56,
+            "other_APs_Time": 0,
+            "free_Time": 2,
+            "ch_load": 35,
+            "ch_load(includeinterence)": 98
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 5,
+            "DUT_Time": 3,
+            "other_APs_Time": 7,
+            "free_Time": 85,
+            "ch_load": 10,
+            "ch_load(includeinterence)": 15
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 74,
+            "DUT_Time": 75,
+            "other_APs_Time": 0,
+            "free_Time": 0,
+            "ch_load": 26,
+            "ch_load(includeinterence)": 100
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 7,
+            "DUT_Time": 5,
+            "other_APs_Time": 9,
+            "free_Time": 79,
+            "ch_load": 14,
+            "ch_load(includeinterence)": 21
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 61,
+            "DUT_Time": 34,
+            "other_APs_Time": 3,
+            "free_Time": 2,
+            "ch_load": 37,
+            "ch_load(includeinterence)": 98
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 87,
+            "DUT_Time": 3,
+            "other_APs_Time": 10,
+            "free_Time": 0,
+            "ch_load": 13,
+            "ch_load(includeinterence)": 100
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 68,
+            "DUT_Time": 2,
+            "other_APs_Time": 29,
+            "free_Time": 1,
+            "ch_load": 31,
+            "ch_load(includeinterence)": 99
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 6,
+            "DUT_Time": 3,
+            "other_APs_Time": 10,
+            "free_Time": 81,
+            "ch_load": 13,
+            "ch_load(includeinterence)": 19
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 62,
+            "DUT_Time": 103,
+            "other_APs_Time": 0,
+            "free_Time": 1,
+            "ch_load": 37,
+            "ch_load(includeinterence)": 99
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 6,
+            "DUT_Time": 1,
+            "other_APs_Time": 13,
+            "free_Time": 80,
+            "ch_load": 14,
+            "ch_load(includeinterence)": 20
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 68,
+            "DUT_Time": 12,
+            "other_APs_Time": 20,
+            "free_Time": 0,
+            "ch_load": 32,
+            "ch_load(includeinterence)": 100
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 6,
+            "DUT_Time": 7,
+            "other_APs_Time": 8,
+            "free_Time": 79,
+            "ch_load": 15,
+            "ch_load(includeinterence)": 21
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 68,
+            "DUT_Time": 48,
+            "other_APs_Time": 0,
+            "free_Time": 0,
+            "ch_load": 32,
+            "ch_load(includeinterence)": 100
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 6,
+            "DUT_Time": 11,
+            "other_APs_Time": 11,
+            "free_Time": 72,
+            "ch_load": 22,
+            "ch_load(includeinterence)": 28
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 74,
+            "DUT_Time": 143,
+            "other_APs_Time": 0,
+            "free_Time": 1,
+            "ch_load": 25,
+            "ch_load(includeinterence)": 99
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 6,
+            "DUT_Time": 4,
+            "other_APs_Time": 17,
+            "free_Time": 73,
+            "ch_load": 21,
+            "ch_load(includeinterence)": 27
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 56,
+            "DUT_Time": 8,
+            "other_APs_Time": 36,
+            "free_Time": 0,
+            "ch_load": 44,
+            "ch_load(includeinterence)": 100
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 149,
+            "interence_time": 5,
+            "DUT_Time": 3,
+            "other_APs_Time": 13,
+            "free_Time": 79,
+            "ch_load": 16,
+            "ch_load(includeinterence)": 21
+        }
+    ],
+    [
+        {
+            "mac_cpe": "a8:25:eb:14:c3:2e",
+            "Currentchannel": 1,
+            "interence_time": 57,
+            "DUT_Time": 85,
+            "other_APs_Time": 0,
+            "free_Time": 0,
+            "ch_load": 43,
+            "ch_load(includeinterence)": 100
+        }
+    ]
+]
