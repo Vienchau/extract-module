@@ -47,14 +47,14 @@ char *ConvertIDTopic(int topic)
    {
       return INTERFACE_STAT;
    }
-   case GET_NAP_0:
-   {
-      return NAP_0;
-   }
-   case GET_NAP_1:
-   {
-      return NAP_1;
-   }
+   // case GET_NAP_0:
+   // {
+   //    return NAP_0;
+   // }
+   // case GET_NAP_1:
+   // {
+   //    return NAP_1;
+   // }
    case GET_IP:
    {
       return IP_STAT;
@@ -163,7 +163,7 @@ void DumpToFile(char *path, json_t *root)
 ********************************************************
 ********************************************************/
 
-void ParserInterfaceNew(json_t *value, const char *key, Interface_Stat *interface_temp)
+void ParserInterfaceNew(json_t *value, const char *key, interface_stat_t *interface_temp)
 {
    interface_temp->last_record = json_array();
    json_array_append_new(interface_temp->last_record, json_object_get(value, "last_record"));
@@ -182,7 +182,7 @@ void ParserInterfaceNew(json_t *value, const char *key, Interface_Stat *interfac
 
    interface_temp->interface = key;
 }
-void ParserInterfaceStats(Interface_Stat *interface, json_t *value, int index_interface)
+void ParserInterfaceStats(interface_stat_t *interface, json_t *value, int index_interface)
 {
    json_array_append_new(interface[index_interface].last_record, json_object_get(value, "last_record"));
    json_array_append_new(interface[index_interface].txBytes, json_object_get(value, "TxBytes"));
@@ -190,7 +190,7 @@ void ParserInterfaceStats(Interface_Stat *interface, json_t *value, int index_in
    json_array_append_new(interface[index_interface].txErrors, json_object_get(value, "TxErrors"));
    json_array_append_new(interface[index_interface].rxErrors, json_object_get(value, "RxErrors"));
 }
-int SearchInterfaces(Interface_Stat *stat, const char *key_s)
+int SearchInterfaces(interface_stat_t *stat, const char *key_s)
 {
 
    for (int i = 0; i < vector_size(stat); i++)
@@ -203,7 +203,7 @@ int SearchInterfaces(Interface_Stat *stat, const char *key_s)
    return -1;
 }
 
-/************* WLAN_CLIENT_STAT IMPLEMENTATION *****************
+/************* WLAN_CLIENT_STAT IMPLEMENTATION *********
 ********************************************************
 ********************************************************
 ********************************************************
@@ -211,7 +211,7 @@ int SearchInterfaces(Interface_Stat *stat, const char *key_s)
 ********************************************************
 ********************************************************/
 
-void ParserWlanClientStatsNew(json_t *value, const char *key, Wlan_Client_Stat *wlan_clients_temp)
+void ParserWlanClientStatsNew(json_t *value, const char *key, wlan_client_stat_t *wlan_clients_temp)
 {
    // Wlan_Client_Stat *wlan_clients_temp = vector_add_asg(&(*wlan_clients));
    wlan_clients_temp->last_record = json_array();
@@ -225,7 +225,7 @@ void ParserWlanClientStatsNew(json_t *value, const char *key, Wlan_Client_Stat *
    wlan_clients_temp->txBytes = json_integer_value(json_object_get(value, "TxBytes"));
    wlan_clients_temp->rxBytes = json_integer_value(json_object_get(value, "RxBytes"));
 }
-void ParserWlanClientStats(Wlan_Client_Stat *wlan_clients, json_t *value, int index_interface)
+void ParserWlanClientStats(wlan_client_stat_t *wlan_clients, json_t *value, int index_interface)
 {
    wlan_clients[index_interface].txBytes = json_integer_value(json_object_get(value, "TxBytes"));
    wlan_clients[index_interface].rxBytes = json_integer_value(json_object_get(value, "RxBytes"));
@@ -233,7 +233,7 @@ void ParserWlanClientStats(Wlan_Client_Stat *wlan_clients, json_t *value, int in
    json_array_append_new(wlan_clients[index_interface].last_record, json_object_get(value, "last_record"));
 }
 
-int SearchMacName(Wlan_Client_Stat *stat, const char *key_s)
+int SearchMacName(wlan_client_stat_t *stat, const char *key_s)
 {
 
    for (int i = 0; i < vector_size(stat); i++)
@@ -244,4 +244,58 @@ int SearchMacName(Wlan_Client_Stat *stat, const char *key_s)
       }
    }
    return -1;
+}
+
+/************* LAN_CLIENT_STAT IMPLEMENTATION *********
+********************************************************
+********************************************************
+********************************************************
+********************************************************
+********************************************************
+********************************************************/
+void ParserLanClientStatsNew(json_t *value, const char *key, lan_client_stat_t *lan_clients_temp)
+{
+   // Wlan_Client_Stat lan_clients_temp = vector_add_asg(&(*wlan_clients));
+   lan_clients_temp->last_record = json_integer_value(json_object_get(value, "last_record"));
+   lan_clients_temp->interface = json_string_value(json_object_get(value, "interface"));
+   lan_clients_temp->mac_name = key;
+   lan_clients_temp->ip = json_string_value(json_object_get(value, "Ip"));
+}
+
+int SearchMacName_Lan(lan_client_stat_t *stat, const char *key_s)
+{
+
+   for (int i = 0; i < vector_size(stat); i++)
+   {
+      if (strcmp(stat[i].mac_name, key_s) == 0)
+      {
+         return i;
+      }
+   }
+   return -1;
+}
+
+/************* CHANNEL_USAGE IMPLEMENTATION *********
+********************************************************
+********************************************************
+********************************************************
+********************************************************
+********************************************************
+********************************************************/
+
+void ChannelUsageInit(channel_usage_t *channel, const char *channeName)
+{
+   channel->channel = channeName;
+   channel->dut_time = json_array();
+   channel->free_time = json_array();
+   channel->interence_time = json_array();
+   channel->other_ap_time = json_array();
+}
+
+void ChannelUsageClear(channel_usage_t *channel)
+{
+   json_decref(channel->dut_time);
+   json_decref(channel->free_time);
+   json_decref(channel->interence_time);
+   json_decref(channel->other_ap_time);
 }
