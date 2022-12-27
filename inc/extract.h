@@ -6,16 +6,16 @@
 
 /* Topic defines */
 // #define MAC_CLIENT_TOPIC "\"mac_client\""
-#define WLAN_CLIENT "\"wlan_client_stat\""  // ok
-#define LAN_CLIENT "\"lan_client_stat\""    // ok
-#define INTERFACE_STAT "\"interface_stat\"" // ok
-#define NAP_0 "\"nap_wlan0\""
-#define NAP_1 "\"nap_wlan1\""
-#define IP_STAT "\"ip_stat\"" // ok
+#define WLAN_CLIENT "\"wlan_client_stat\""
+#define LAN_CLIENT "\"lan_client_stat\""
+#define INTERFACE_STAT "\"interface_stat\""
+// #define NAP_0 "\"nap_wlan0\""
+// #define NAP_1 "\"nap_wlan1\""
+#define IP_STAT "\"ip_stat\""
 // #define REGISTER "\"register\""
-#define SSIDS "\"get_ssids_stat\"" // ok
-#define MEM "\"info_mem\""         // ok
-#define CPU "\"info_cpu\""         // ok
+#define SSIDS "\"get_ssids_stat\""
+#define MEM "\"info_mem\""
+#define CPU "\"info_cpu\""
 #define CHANNEL_USAGE "\"get_channel_usage\""
 #define LOGFILE "[LOG_INFO]"
 
@@ -26,6 +26,7 @@
 
 #define CHANNEL5G "5G"
 #define CHANNEL2G "2.4G"
+#define LINE 4096
 
 enum
 {
@@ -33,19 +34,17 @@ enum
    GET_WLAN,
    GET_LAN,
    GET_INTERFACE,
-   GET_NAP_0,
-   GET_NAP_1, // false
+   // GET_NAP_0,
+   // GET_NAP_1,
    GET_IP,
-   // GET_REGISTER,       // false
-   GET_SSIDS,         // false
-   GET_MEM,           // false
-   GET_CPU,           // false
-   GET_CHANNEL_USAGE, // false
+   // GET_REGISTER,
+   GET_SSIDS,
+   GET_MEM,
+   GET_CPU,
+   GET_CHANNEL_USAGE,
    ALL,
    // DEFAULT,
 };
-
-#define LINE 4096
 
 /* Utils define */
 /* Remove Char from String */
@@ -72,12 +71,10 @@ typedef struct
    json_t *rxErrors;
 } interface_stat_t;
 
-/* Print Interface struct */
 /* Parsers Information in Json form store in char pointer to struct */
 void ParserInterfaceStats(interface_stat_t *interface, json_t *value, int index_interface);
 void ParserInterfaceNew(json_t *value, const char *key, interface_stat_t *interface_temp);
-/* Search the index Interface_arr that has the key
- *(interface[index].interface == key) -> return index */
+/* Search the index Interface_arr that has the key */
 int SearchInterfaces(interface_stat_t *stat, const char *key_s);
 /* Get the data of InterfaceTopic after process */
 json_t *ExtractInterfaceData(time_t time, int range);
@@ -92,7 +89,7 @@ typedef struct
    unsigned long long rxBytes;
    json_t *rssi;
 } wlan_client_stat_t;
-
+/* Get the data of Wlan client Topic after process */
 json_t *ExtractWlanData(time_t time, int range);
 void ParserWlanClientStats(wlan_client_stat_t *wlan_clients, json_t *value, int index_interface);
 void ParserWlanClientStatsNew(json_t *value, const char *key, wlan_client_stat_t *wlan_clients_temp);
@@ -138,18 +135,13 @@ typedef struct
 json_t *ExtractChannelUsageData(time_t time, int range);
 void ChannelUsageInit(channel_usage_t *channel, const char *channeName);
 void ChannelUsageClear(channel_usage_t *channel);
-/* Function Call defines */
+
+/*General Function Call defines */
 json_t *FindByTopics(int TopicId, char *log);
 int FindByTimestamp(long long Timestamp, int range, char *log);
-
-/*
-   ***Passing the TopicId which is defined as enum type.
-*Find by Topic and Timestamp is finding all line of log
-that match the topicID and the range of (Timestamp- range) -> (Timestamp +
-range)
- */
 char *FindByTopicsAndTimestamp(int Topic, long long Timestamp, int range,
                                char *log);
 
-void ExtractAllData();
+/* Extract all data from all Topic spec by time and time range*/
+json_t *ExtractData(time_t time, int range, int topic);
 #endif

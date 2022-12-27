@@ -610,3 +610,105 @@ json_t *ExtractChannelUsageData(time_t time, int range)
 
    return finalJson;
 }
+
+json_t *ExtractData(time_t time, int range, int topic)
+{
+   json_t *root = json_object();
+   switch (topic)
+   {
+   case GET_WLAN:
+   {
+      json_t *wlan_json = ExtractWlanData(time, range);
+      json_object_set_new(root, "wlan_client_stat", wlan_json);
+      json_t *result = json_deep_copy(root);
+      json_decref(root);
+      return result;
+   }
+   case GET_LAN:
+   {
+      json_t *lan_json = ExtractLanData(time, range);
+      json_object_set_new(root, "lan_client_stat", lan_json);
+      json_t *result = json_deep_copy(root);
+      json_decref(root);
+      return result;
+   }
+   case GET_INTERFACE:
+   {
+      json_t *interface_json = ExtractInterfaceData(time, range);
+      json_object_set_new(root, "interface_stat", interface_json);
+      json_t *result = json_deep_copy(root);
+      json_decref(root);
+      return result;
+   }
+   case GET_IP:
+   {
+      json_t *ip_json = ExtractIpData(time, range);
+      json_object_set_new(root, "ip_stat", ip_json);
+      json_t *result = json_deep_copy(root);
+      json_decref(root);
+      return result;
+   }
+   case GET_SSIDS:
+   {
+      json_t *ssid_json = ExtractSsidData(time, range);
+      json_object_set_new(root, "get_ssids_stat", ssid_json);
+      json_t *result = json_deep_copy(root);
+      json_decref(root);
+      return result;
+   }
+   case GET_MEM:
+   {
+      json_t *mem_json = ExtractMemData(time, range);
+      json_object_set_new(root, "info_mem", mem_json);
+      json_t *result = json_deep_copy(root);
+      json_decref(root);
+      return result;
+   }
+   case GET_CPU:
+   {
+      json_t *cpu_json = ExtractCpuData(time, range);
+      json_object_set_new(root, "info_cpu", cpu_json);
+      json_t *result = json_deep_copy(root);
+      json_decref(root);
+      return result;
+   }
+   case GET_CHANNEL_USAGE:
+   {
+      json_t *channel_json = ExtractChannelUsageData(time, range);
+      json_object_set_new(root, "get_channel_usage", channel_json);
+      json_t *result = json_deep_copy(root);
+      json_decref(root);
+      return result;
+   }
+   case ALL:
+   {
+      json_t *interface_json = ExtractInterfaceData(time, range);
+      json_t *wlan_json = ExtractWlanData(time, range);
+      json_t *ssid_json = ExtractSsidData(time, range);
+      json_t *lan_json = ExtractLanData(time, range);
+      json_t *ip_json = ExtractIpData(time, range);
+      json_t *mem_json = ExtractMemData(time, range);
+      json_t *cpu_json = ExtractCpuData(time, range);
+      json_t *channel_json = ExtractChannelUsageData(time, range);
+
+      json_object_set_new(root, "interface_stat", interface_json);
+      json_object_set_new(root, "wlan_client_stat", wlan_json);
+      json_object_set_new(root, "get_ssids_stat", ssid_json);
+      json_object_set_new(root, "lan_client_stat", lan_json);
+      json_object_set_new(root, "ip_stat", ip_json);
+      json_object_set_new(root, "info_mem", mem_json);
+      json_object_set_new(root, "info_cpu", cpu_json);
+      json_object_set_new(root, "get_channel_usage", channel_json);
+
+      // DumpToFile("result.json", root);
+      json_t *result = json_deep_copy(root);
+      json_decref(root);
+
+      return result;
+   }
+   default:
+   {
+      return NULL;
+   }
+   }
+}

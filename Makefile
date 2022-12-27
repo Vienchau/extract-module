@@ -29,7 +29,6 @@ OBJDIR = ./obj
 OBJ += $(OBJDIR)/main.o \
 	$(OBJDIR)/extract.o \
 	$(OBJDIR)/utils.o \
-	$(OBJDIR)/test_function.o \
 	$(OBJDIR)/vec.o \
 
 

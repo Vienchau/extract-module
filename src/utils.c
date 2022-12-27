@@ -47,14 +47,14 @@ char *ConvertIDTopic(int topic)
    {
       return INTERFACE_STAT;
    }
-   case GET_NAP_0:
-   {
-      return NAP_0;
-   }
-   case GET_NAP_1:
-   {
-      return NAP_1;
-   }
+   // case GET_NAP_0:
+   // {
+   //    return NAP_0;
+   // }
+   // case GET_NAP_1:
+   // {
+   //    return NAP_1;
+   // }
    case GET_IP:
    {
       return IP_STAT;

@@ -3,190 +3,124 @@
 ### Log format:
 
 ```bash
-[2022-12-05 17:30:29]: [LOG_INFO]: {"topic":"mac_client","data":[{"mac_cpe":"a4:81:7a:7b:c5:b6","ClientId":1,"Hostname":"DESKTOP-3A3JO0P","Ip":"192.168.1.223","Channel":48,"Mac":"74:c6:3b:b6:69:71","TxBytes":151455,"RxBytes":211423,"TxPkts":344,"RxPkts":795,"RSSI":-68,"rx_bw":"80M","tx_bw":"","rx_rate":"40M","tx_rate":"VHTNSS1-MCS288"}]}
+[2022-12-13 07:58:38]: [LOG_INFO]: {"topic":"get_ssids_stat","data":[{"mac_cpe":"a8:25:eb:14:c3:2e","Wlan":"wlan1","TxPkts":0,"RxPkts":645737,"TxBytes":0,"RxBytes":79319643,"TxUnicastPkts":78643,"TxMulticastPkts":6,"TxBroadcastPkts":390,"TxRetries":0,"TxFailures":0,"TxDropped":8606,"TxMgmtFrames":79039,"Rx_ucast_pkts":632,"RxBroadcastPkts":5922955,"rx_retrys":181,"RxPktsErrored":0,"RxErrors":0,"RxPktsDropped":0,"RxMgmtFrames":5505531}]}
+[2022-12-13 07:58:41]: [LOG_INFO]: {"topic":"get_ssids_stat","data":[{"mac_cpe":"a8:25:eb:14:c3:2e","Wlan":"wlan0","TxPkts":1038,"RxPkts":500481,"TxBytes":267465,"RxBytes":51968622,"TxUnicastPkts":35977,"TxMulticastPkts":122,"TxBroadcastPkts":376,"TxRetries":0,"TxFailures":36,"TxDropped":8396,"TxMgmtFrames":35438,"Rx_ucast_pkts":1957,"RxBroadcastPkts":1744578,"rx_retrys":551,"RxPktsErrored":112547,"RxErrors":112547,"RxPktsDropped":6,"RxMgmtFrames":1331616}]}
+[2022-12-13 07:58:44]: [LOG_INFO]: {"topic":"info_mem","data":[{"mac_cpe":"a8:25:eb:14:c3:2e","total":174568,"used":71748,"free":57988,"shared":9112,"cache":44832,"available":98704}]}
+[2022-12-13 07:58:47]: [LOG_INFO]: {"topic":"info_cpu","data":[{"mac_cpe":"a8:25:eb:14:c3:2e","current":6,"5minutes":6,"10minutes":6,"process":"1/109","lastprocess":"21142"}]}
+[2022-12-13 07:59:09]: [LOG_INFO]: {"topic":"ping_lan","data":[{"mac_cpe":"a8:25:eb:14:c3:2e","client":"b0:7b:25:0d:8a:5b","lossrate":"100%","min":0.0,"avg":0.0,"max":0.0,"jitter":0.0},{"mac_cpe":"a8:25:eb:14:c3:2e","client":"da:c4:4e:73:bf:ff","lossrate":"0%","min":0.738,"avg":0.854,"max":1.138,"jitter":0.0},{"mac_cpe":"a8:25:eb:14:c3:2e","client":"54:46:17:fc:7b:75","lossrate":"0%","min":0.461,"avg":0.542,"max":1.032,"jitter":0.0}]}
+[2022-12-13 07:59:09]: [LOG_INFO]: {"topic":"get_channel_usage","data":[{"mac_cpe":"a8:25:eb:14:c3:2e","Currentchannel":149,"interence_time":71,"DUT_Time":1,"other_APs_Time":10,"free_Time":18,"ch_load":11,"ch_load(includeinterence)":82}]}
 ```
 
 ### Function:
 
 ```c
-char* FindByTopicsAndTimestamp(int Topic, long long Timestamp, int range, char* log);
+json_t *ExtractData(time_t time, int range, int topic);
 ```
 
 **Parameters:**
 
-- `Topic`: Topic ID that identifies the topic to filter. If specified `ALL`, the function will return all log file in range of timestamp.
-- `Timestamp`: Specified by epoch timestamp.
-- `range`: Range of log file. The function will filter in range of (Timestamp - range) ---- (Timestamp + range).
-- `log`: The path to log file.
-- `Return`: the char pointer holding log after filtering.
+- `time`: Specified by epoch timestamp.
+- `range`: Range of log file. The function will filter in range of (Timestamp - range) - (Timestamp + range).
+- `topic`: Topic ID that identifies the topic to filter. If specified `ALL`, the function will return all topic in range of timestamp.
+- `Return`: **json_t\*** pointer hold data after process.
+
+**Possible topic types:**
+
+```c
+enum
+{
+   GET_WLAN,              //"wlan_client_stat"
+   GET_LAN,               //"lan_client_stat"
+   GET_INTERFACE,         //"interface_stat"
+   GET_IP,                //"ip_stat"
+   GET_SSIDS,             //"get_ssids_stat"
+   GET_MEM,               //"info_mem"
+   GET_CPU,               //"info_cpu"
+   GET_CHANNEL_USAGE,     //"get_channel_usage"
+   ALL,                   //All topic
+};
+```
+
+### Example usage:
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include "extract.h"
+
+int main()
+{
+   /* Tue, 13 Dec 2022 00:00:00 GMT+7, 24 hours range */
+   time_t time = ConvertDatetoEpoch(2022, 12, 13, 0);
+   int range = ConvertHoursToSecond(24);
+   json_t *filtering = ExtractData(time, range, GET_INTERFACE);
+   DumpToFile("result.json", filtering);
+   json_decref(filtering);
+   return 0;
+}
+```
+
+### Result:
+
+```bash
+{
+    "interface_stat": [
+        {
+            "Interface": "wlan0",
+            "TxBytes": [
+                267465,
+                1135031,
+                73502212,
+                81386745,
+                ....
+            ],
+            "RxBytes": [
+                51808273,
+                65645571,
+                112728630,
+                142675425,
+                ....
+            ],
+            "TxErrors": [
+                36,
+                41,
+                226,
+                227,
+                ....
+            ],
+            "RxErrors": [
+                112524,
+                115504,
+                118026,
+                119795,
+                ....
+            ],
+            "Timestamp": [
+                1670893114,
+                1670893714,
+                1670894314,
+                1670894914,
+                ....
+            ]
+        },
+
+}
+
+```
+
+### Convert Date to Epoch TimeStamp
 
 ```c
 time_t ConvertDatetoEpoch(int year, int month, int day, int hour)
 ```
 
 - `Return`: Return the epoch timestamp (sencods) from date passed to the function.
-- Example:
+
+**Example:**
 
 ```c
 //17h 5/12/2022
 ConvertDatetoEpoch(2022, 12, 5, 17);
 //return 1670234400
-```
-
-### Char pointer after filtering by FindByTopicsAndTimestamp():
-
-```c
-   char* resul = FindByTopicsAndTimestamp(GET_INTERFACE,ConvertDatetoEpoch(2022, 12, 5, 17),ConvertHoursToSecond(1), LOG_PATH);
-```
-
-```bash
-[{"topic":"interface_stat","data":{"wlan0":{"TxPkts":19618,"RxPkts":60338,"TxBytes":18910308,"RxBytes":11293971,"TxErrors":96,"RxErrors":9907,"TxDrops":0,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236229},"wlan1":{"TxPkts":0,"RxPkts":230432,"TxBytes":0,"RxBytes":62650238,"TxErrors":0,"RxErrors":0,"TxDrops":0,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236229},"lan0":{"TxPkts":2934,"RxPkts":0,"TxBytes":772243,"RxBytes":0,"TxErrors":0,"RxErrors":0,"TxDrops":11,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236229},"lan1":{"TxPkts":2999,"RxPkts":116,"TxBytes":778326,"RxBytes":9630,"TxErrors":0,"RxErrors":0,"TxDrops":8,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236229},"lan2":{"TxPkts":4462,"RxPkts":2326,"TxBytes":996550,"RxBytes":222073,"TxErrors":0,"RxErrors":0,"TxDrops":9,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236229},"lan3":{"TxPkts":2934,"RxPkts":0,"TxBytes":772243,"RxBytes":0,"TxErrors":0,"RxErrors":0,"TxDrops":11,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236229},"ppp0":{"TxPkts":1118,"RxPkts":827,"TxBytes":87708,"RxBytes":187492,"TxErrors":0,"RxErrors":0,"TxDrops":0,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236229}},"time":"2022-12-05 17:30:29"},{"topic":"interface_stat","data":{"wlan0":{"TxPkts":21353,"RxPkts":71685,"TxBytes":19793137,"RxBytes":13326707,"TxErrors":119,"RxErrors":12669,"TxDrops":0,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236825},"wlan1":{"TxPkts":0,"RxPkts":285367,"TxBytes":0,"RxBytes":76356720,"TxErrors":0,"RxErrors":0,"TxDrops":0,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236825},"lan0":{"TxPkts":3577,"RxPkts":0,"TxBytes":929041,"RxBytes":0,"TxErrors":0,"RxErrors":0,"TxDrops":13,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236825},"lan1":{"TxPkts":3651,"RxPkts":139,"TxBytes":935638,"RxBytes":11306,"TxErrors":0,"RxErrors":0,"TxDrops":10,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236825},"lan2":{"TxPkts":5121,"RxPkts":2370,"TxBytes":1154419,"RxBytes":225342,"TxErrors":0,"RxErrors":0,"TxDrops":11,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236825},"lan3":{"TxPkts":3577,"RxPkts":0,"TxBytes":929041,"RxBytes":0,"TxErrors":0,"RxErrors":0,"TxDrops":13,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236825},"ppp0":{"TxPkts":1811,"RxPkts":1280,"TxBytes":202754,"RxBytes":325571,"TxErrors":0,"RxErrors":0,"TxDrops":0,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670236825}},"time":"2022-12-05 17:40:25"},{"topic":"interface_stat","data":{"wlan0":{"TxPkts":21353,"RxPkts":83560,"TxBytes":19793137,"RxBytes":15206710,"TxErrors":119,"RxErrors":17637,"TxDrops":0,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670237425},"wlan1":{"TxPkts":0,"RxPkts":329474,"TxBytes":0,"RxBytes":87438049,"TxErrors":0,"RxErrors":0,"TxDrops":0,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670237425},"lan0":{"TxPkts":3644,"RxPkts":0,"TxBytes":944863,"RxBytes":0,"TxErrors":0,"RxErrors":0,"TxDrops":13,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670237425},"lan1":{"TxPkts":3726,"RxPkts":163,"TxBytes":951884,"RxBytes":13012,"TxErrors":0,"RxErrors":0,"TxDrops":10,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670237425},"lan2":{"TxPkts":5190,"RxPkts":2387,"TxBytes":1170382,"RxBytes":226499,"TxErrors":0,"RxErrors":0,"TxDrops":11,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670237425},"lan3":{"TxPkts":3644,"RxPkts":0,"TxBytes":944863,"RxBytes":0,"TxErrors":0,"RxErrors":0,"TxDrops":13,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670237425},"ppp0":{"TxPkts":1918,"RxPkts":1364,"TxBytes":212179,"RxBytes":358395,"TxErrors":0,"RxErrors":0,"TxDrops":0,"RxDrops":0,"TxCompressed":0,"RxCompressed":0,"last_record":1670237425}},"time":"2022-12-05 17:50:25"}]
-```
-
-### Extract interface topic data into JSON array:
-
-```c
-char *ExtractInterfaceData(time_t time, int range)
-```
-
-**Parameters:**
-
-- `time`: Specified by epoch timestamp.
-- `range`: Range of log file. The function will filter in range of (Timestamp - range) ---- (Timestamp + range).
-- `return`: Return char pointer hold JSON formed like:
-
-```bash
-[
-    {
-        "Interface": "wlan0",
-        "TxBytes": [
-            18910308,
-            19793137,
-            19793137,
-            19793137,
-            19793137,
-            ...],
-        "RxBytes": [
-            11293971,
-            13326707,
-            15206710,
-            16832929,
-            18337700,
-            ...],
-        "TxErrors": [
-            96,
-            119,
-            119,
-            119,
-            119,
-            119,
-            ...],
-         "RxErrors": [
-            9907,
-            12669,
-            17637,
-            20523,
-            22668,
-            24461,
-            26324,
-            ...],
-         "Timestamp": 1670291424,
-         "Timeline": [
-            "2022-12-05 17:30:29",
-            "2022-12-05 17:40:25",
-            "2022-12-05 17:50:25",
-            ...],
-    },
-    {
-        "Interface": "wlan1",
-        "TxBytes": [
-            0,
-            0,
-            0,
-            ...],
-            ...},
-]
-```
-
-### Extract Wlan client topic data into JSON array:
-
-```c
-char *ExtractWlanData(time_t time, int range)
-```
-
-**Parameters:**
-
-- `time`: Specified by epoch timestamp.
-- `range`: Range of log file. The function will filter in range of (Timestamp - range) ---- (Timestamp + range).
-- `return`: Return char pointer hold JSON formed like:
-
-```bash
-[
-    {
-        "Macname": "32:da:e5:7e:63:a2",
-        "Hostname": "unknown_32:da:e5:7e:63:a2",
-        "TxBytes": 32986558,
-        "RxBytes": 29915893,
-        "Timestamp": [
-            1670894195,
-            1670894795,
-            1670895395,
-            1670895995,
-            1670896595,
-            1670897195,
-            1670897795,
-            1670898395,
-            1670898995,
-            1670899595,
-            1670900195
-        ],
-        "RSSI": [
-            -62,
-            -73,
-            -62,
-            -63,
-            -60,
-            -63,
-            -62,
-            -65,
-            -63,
-            -74,
-            -74
-        ]
-    },
-    {
-            ...},
-]
-```
-
-### Extract SSID per Channel topic data into JSON array:
-
-```c
-char *ExtractSsidData(time_t time, int range)
-```
-
-**Parameters:**
-
-- `time`: Specified by epoch timestamp.
-- `range`: Range of log file. The function will filter in range of (Timestamp - range) ---- (Timestamp + range).
-- `return`: Return char pointer hold JSON formed like:
-
-```bash
-[]
-    {
-        "Wlan": "wlan0",
-        "TxBytes": 991465498,
-        "RxBytes": 858371559,
-        "TxFailures": 1109,
-        "RxErrors": 142761
-    },
-    {
-        "Wlan": "wlan1",
-        "TxBytes": 0,
-        "RxBytes": 163503578,
-        "TxFailures": 0,
-        "RxErrors": 0
-    }
-]
-]
 ```
