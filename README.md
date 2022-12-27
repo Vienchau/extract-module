@@ -115,7 +115,7 @@ int main()
 time_t ConvertDatetoEpoch(int year, int month, int day, int hour)
 ```
 
-- `Return`: Return the epoch timestamp (sencods) from date passed to the function.
+- `Return`: Return the epoch timestamp (seconds) from date passed to the function.
 
 **Example:**
 
